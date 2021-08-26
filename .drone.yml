@@ -1,0 +1,20 @@
+kind: pipeline
+name: Build_now
+
+clone:
+  depth: 1
+
+steps:
+  - name: setup & build
+    image: archlinux:base-devel
+    environment:
+      TOKEN:
+        from_secret: TOKEN
+      CHAT_ID:
+        from_secret: CHAT_ID
+    commands:
+      - curl -fsSL "https://repo.archlinuxcn.org/x86_64/glibc-linux4-2.33-4-x86_64.pkg.tar.zst" | bsdtar -C / -xvf -
+      - pacman -Syu --needed --noconfirm wget base-devel xmlto inetutils bc cpio python-sphinx python-sphinx_rtd_theme graphviz imagemagick git python2 python zip xxd
+      - "export TOKEN=$TOKEN"
+      - "export CHAT_ID=$CHAT_ID"
+      - "bash build_now.sh"
